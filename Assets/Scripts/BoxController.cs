@@ -50,6 +50,23 @@ public class BoxController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
             grid = new Vector3(grid.x, grid.y, 1);
         }
 
+        if (transform.position.x < GameManager.Instance.left)
+        {
+            transform.position = new Vector3(GameManager.Instance.left, transform.position.y, transform.position.z);
+        }
+        if (transform.position.x > GameManager.Instance.right)
+        {
+            transform.position = new Vector3(GameManager.Instance.right, transform.position.y, transform.position.z);
+        }
+        if (transform.position.y < GameManager.Instance.bottom)
+        {
+            transform.position = new Vector3(transform.position.x, GameManager.Instance.bottom, transform.position.z);
+        }
+        if (transform.position.y > GameManager.Instance.top)
+        {
+            transform.position = new Vector3(transform.position.x, GameManager.Instance.top, transform.position.z);
+        }
+
         transform.position = new Vector3(Mathf.Round(transform.position.x / grid.x) * grid.x,
                                          Mathf.Round(transform.position.y / grid.y) * grid.y,
                                          Mathf.Round(transform.position.z / grid.z) * grid.z);
