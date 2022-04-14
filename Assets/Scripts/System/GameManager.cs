@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public float height;
     public float numColumns;
     public float numRows;
+
     public static GameManager Instance { get; private set; }
     public static bool IsPaused { get; private set; }
 

@@ -10,8 +10,11 @@ public class Characteristics : MonoBehaviour
     public Colors color;
     public Sizes size;
 
+    private GameManager gameManager;
+
     public void Start()
     {
+        gameManager = GameManager.Instance;
         Setup();
     }
 
@@ -20,15 +23,15 @@ public class Characteristics : MonoBehaviour
         switch (color)
         {
             case Colors.Orange:
-                GetComponent<SpriteRenderer>().color = GameManager.Instance.orange;
+                GetComponent<SpriteRenderer>().color = gameManager.orange;
 
                 break;
             case Colors.Grey:
-                GetComponent<SpriteRenderer>().color = GameManager.Instance.grey;
+                GetComponent<SpriteRenderer>().color = gameManager.grey;
 
                 break;
             case Colors.Black:
-                GetComponent<SpriteRenderer>().color = GameManager.Instance.black;
+                GetComponent<SpriteRenderer>().color = gameManager.black;
                 break;
         }
     }

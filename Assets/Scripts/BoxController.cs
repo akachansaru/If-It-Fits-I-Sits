@@ -9,6 +9,13 @@ public class BoxController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     [SerializeField, ReadOnly] private bool isClicked = false;
 
+    private GameManager gameManager;
+
+    public void Start()
+    {
+        gameManager = GameManager.Instance;
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         isClicked = true;
@@ -30,13 +37,14 @@ public class BoxController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     private void OnDrawGizmos()
     {
-        SnapToGrid();
+        //SnapToGrid();
     }
 
     private void SnapToGrid()
     {
-        Vector3 grid = GameManager.Instance.grid;
+        Vector3 grid = gameManager.grid;
 
+        // Make sure grid sizes are > 0
         if (grid.x == 0)
         {
             grid = new Vector3(1, grid.y, grid.z);
@@ -50,23 +58,25 @@ public class BoxController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
             grid = new Vector3(grid.x, grid.y, 1);
         }
 
-        if (transform.position.x < GameManager.Instance.left)
+        // Bring the box back into the bounds of the game if the player dragged it too far
+        if (transform.position.x < gameManager.left)
         {
-            transform.position = new Vector3(GameManager.Instance.left, transform.position.y, transform.position.z);
+            transform.position = new Vector3(gameManager.left, transform.position.y, transform.position.z);
         }
-        if (transform.position.x > GameManager.Instance.right)
+        if (transform.position.x > gameManager.right)
         {
-            transform.position = new Vector3(GameManager.Instance.right, transform.position.y, transform.position.z);
+            transform.position = new Vector3(gameManager.right, transform.position.y, transform.position.z);
         }
-        if (transform.position.y < GameManager.Instance.bottom)
+        if (transform.position.y < gameManager.bottom)
         {
-            transform.position = new Vector3(transform.position.x, GameManager.Instance.bottom, transform.position.z);
+            transform.position = new Vector3(transform.position.x, gameManager.bottom, transform.position.z);
         }
-        if (transform.position.y > GameManager.Instance.top)
+        if (transform.position.y > gameManager.top)
         {
-            transform.position = new Vector3(transform.position.x, GameManager.Instance.top, transform.position.z);
+            transform.position = new Vector3(transform.position.x, gameManager.top, transform.position.z);
         }
 
+        // Snap to the grid
         transform.position = new Vector3(Mathf.Round(transform.position.x / grid.x) * grid.x,
                                          Mathf.Round(transform.position.y / grid.y) * grid.y,
                                          Mathf.Round(transform.position.z / grid.z) * grid.z);

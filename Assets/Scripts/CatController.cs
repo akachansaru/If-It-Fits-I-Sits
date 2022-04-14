@@ -6,16 +6,10 @@ public class CatController : MonoBehaviour
 {
     public float speed = 1;
 
-    public void Start()
-    {
-
-    }
-
     public void Update()
     {
         Move();
     }
-
 
     private void Move()
     {
