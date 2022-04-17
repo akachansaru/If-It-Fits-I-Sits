@@ -23,15 +23,13 @@ public class Characteristics : MonoBehaviour
         switch (color)
         {
             case Colors.Orange:
-                GetComponent<SpriteRenderer>().color = gameManager.orange;
-
+                GetComponentInChildren<SpriteRenderer>().color = gameManager.orange;
                 break;
             case Colors.Grey:
-                GetComponent<SpriteRenderer>().color = gameManager.grey;
-
+                GetComponentInChildren<SpriteRenderer>().color = gameManager.grey;
                 break;
             case Colors.Black:
-                GetComponent<SpriteRenderer>().color = gameManager.black;
+                GetComponentInChildren<SpriteRenderer>().color = gameManager.black;
                 break;
         }
     }

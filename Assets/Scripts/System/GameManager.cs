@@ -10,18 +10,6 @@ public class GameManager : MonoBehaviour
     public Color grey = Color.grey;
     public Color black = Color.black;
 
-    [Space]
-    public Vector3 grid;
-    public float left;
-    public float right;
-    public float bottom;
-    public float top;
-
-    public float width;
-    public float height;
-    public float numColumns;
-    public float numRows;
-
     public static GameManager Instance { get; private set; }
     public static bool IsPaused { get; private set; }
 
@@ -30,19 +18,6 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
-    {
-        DrawGrid();
-    }
-
-    private void DrawGrid()
-    {
-        width = right - left;
-        height = top - bottom;
-
-        numColumns = width / grid.x;
-        numRows = height / grid.y;
-    }
 
     public void GameOver()
     {
