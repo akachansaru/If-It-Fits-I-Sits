@@ -7,8 +7,9 @@ public class BoxController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     [SerializeField, ReadOnly] private bool isClicked = false;
 
     public BoundsInt area; // This is the area the box should take up in the grid
-    public bool IsPlaced { get; private set; }
+    public bool IsPlaced { get; private set; } // If it's placed on the grid
 
+    public bool IsOccupied { get; set; } // If a cat is sitting in it
 
     public void Start()
     {
