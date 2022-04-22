@@ -9,13 +9,15 @@ public class BoxController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     public Sizes size;
     public BoundsInt area; // This is the area the box should take up in the grid
-    public GameObject sprite;
+    [SerializeField] private GameObject sprite;
     public GameObject hitBox;
     public int boxLayer;
 
     public bool IsPlaced { get; private set; } // If it's placed on the grid
 
     public bool IsOccupied { get; set; } // If a cat is sitting in it
+
+    private bool isOverTrash = false;
 
     public void Start()
     {
@@ -51,6 +53,11 @@ public class BoxController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         size = (Sizes)sizes.GetValue(UnityEngine.Random.Range(0, Enum.GetNames(typeof(Sizes)).Length));
     }
 
+    public Vector3 GetOffset()
+    {
+        return sprite.transform.localPosition;
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         if (!IsPlaced && !isClicked)
@@ -64,13 +71,20 @@ public class BoxController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (CanBePlaced())
+        if (isOverTrash)
         {
-            isClicked = false;
-            hitBox.layer = boxLayer; // Once placed, the cats should detect the box
-            BoxGridPlacement.instance.BoxSelected(null);
-            BoxGridPlacement.instance.PlaceOnGrid(transform);
-            Place();
+            Destroy(gameObject);
+        }
+        else
+        {
+            if (CanBePlaced())
+            {
+                isClicked = false;
+                hitBox.layer = boxLayer; // Once placed, the cats should detect the box
+                BoxGridPlacement.instance.BoxSelected(null);
+                BoxGridPlacement.instance.PlaceOnGrid(transform);
+                Place();
+            }
         }
     }
 
@@ -102,5 +116,21 @@ public class BoxController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     private void DragBox()
     {
         transform.position = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Trash"))
+        {
+            isOverTrash = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Trash"))
+        {
+            isOverTrash = false;
+        }
     }
 }

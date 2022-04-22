@@ -25,46 +25,41 @@ public class BoxGridPlacement : MonoBehaviour
 
     public void Start()
     {
-        string tilePath = @"Tiles\";
+        string tilePath = "Tiles/";
         tileBases.Add(TileType.None, null);
         tileBases.Add(TileType.Empty, Resources.Load<TileBase>(tilePath + "Empty"));
         tileBases.Add(TileType.Filled, Resources.Load<TileBase>(tilePath + "Filled"));
         tileBases.Add(TileType.Overlap, Resources.Load<TileBase>(tilePath + "Overlap"));
     }
 
-    private void ClearArea(Tilemap tilemap, TileType tileType)
-    {
-        TileBase[] toClear = new TileBase[prevArea.size.x * prevArea.size.y * prevArea.size.z];
-        FillTiles(toClear, tileType);
-        tilemap.SetTilesBlock(prevArea, toClear);
-    }
-
     public void FollowBox()
     {
-        ClearArea(tilemapTemp, TileType.None);
-
+        ClearPrevArea();
         currBox.area.position = gridLayout.WorldToCell(currBox.transform.position);
         BoundsInt boxArea = currBox.area;
 
-        TileBase[] baseArray = tilemapMain.GetTilesBlock(boxArea);
-        TileBase[] tileArray = new TileBase[baseArray.Length];
-
-        for (int i = 0; i < tileArray.Length; i++)
+        if (IsInBounds(currBox))
         {
-            if (baseArray[i] == tileBases[TileType.Empty])
-            {
-                // So far so good to place here
-                tileArray[i] = tileBases[TileType.Filled];
-            }
-            else
-            {
-                // If one overlaps, fill the whole area with red and return
-                FillTiles(tileArray, TileType.Overlap);
-                break;
-            }
-        }
+            TileBase[] baseArray = tilemapMain.GetTilesBlock(boxArea);
+            TileBase[] tileArray = new TileBase[baseArray.Length];
 
-        tilemapTemp.SetTilesBlock(boxArea, tileArray);
+            for (int i = 0; i < tileArray.Length; i++)
+            {
+                if (baseArray[i] == tileBases[TileType.Empty])
+                {
+                    // So far so good to place here
+                    tileArray[i] = tileBases[TileType.Filled];
+                }
+                else
+                {
+                    // If one overlaps, fill the whole area with red and return
+                    FillTiles(tileArray, TileType.Overlap);
+                    break;
+                }
+            }
+
+            tilemapTemp.SetTilesBlock(boxArea, tileArray);
+        }
         prevArea = boxArea;
     }
 
@@ -101,6 +96,26 @@ public class BoxGridPlacement : MonoBehaviour
     {
         Vector3Int cellPos = tilemapMain.LocalToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
         toPlace.localPosition = gridLayout.CellToLocalInterpolated(cellPos + new Vector3(0.5f, 0.5f, 0f));
+    }
+
+    private bool IsInBounds(BoxController box)
+    {
+        foreach(Renderer renderer in GameManager.Instance.gameBounds)
+        {
+            // FIXME: Need to make it so the offset works and doesn't show the red tile if it's partly over the path
+            if (renderer.bounds.Contains(box.transform.position - box.GetOffset()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void ClearPrevArea()
+    {
+        TileBase[] toClear = new TileBase[prevArea.size.x * prevArea.size.y * prevArea.size.z];
+        FillTiles(toClear, TileType.None);
+        tilemapTemp.SetTilesBlock(prevArea, toClear);
     }
 
     private void FillTiles(TileBase[] tiles, TileType type)

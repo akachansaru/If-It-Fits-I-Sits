@@ -79,15 +79,23 @@ public class CatController : MonoBehaviour
 
     private void RaycastForBox(Vector2 dir)
     {
-        RaycastHit2D check = Physics2D.Raycast(transform.position, dir, 50f, walkToLayers);
-        // BUG: The cat won't detect boxes behind other boxes
-        if (check.collider != null && !check.collider.GetComponentInParent<BoxController>().IsOccupied && 
-            EvaluateBoxSize(check.collider.GetComponentInParent<BoxController>()) && !foundBox)
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, dir, 50f, walkToLayers);
+
+        if (hits.Length > 0 && !foundBox)
         {
-            direction = dir;
-            foundBox = true;
-            check.collider.GetComponentInParent<BoxController>().IsOccupied = true;
-            targetBox = check.collider.transform;
+            // Loop backwards so the cat goes to the furthest back free box
+            for (int i = hits.Length - 1; i >= 0; i--)
+            {
+                if (!hits[i].collider.GetComponentInParent<BoxController>().IsOccupied &&
+                    EvaluateBoxSize(hits[i].collider.GetComponentInParent<BoxController>()))
+                {
+                    direction = dir;
+                    foundBox = true;
+                    hits[i].collider.GetComponentInParent<BoxController>().IsOccupied = true;
+                    targetBox = hits[i].collider.transform;
+                    break;
+                }
+            }
         }
     }
 

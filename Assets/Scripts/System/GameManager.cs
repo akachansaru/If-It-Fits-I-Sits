@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour
     public Transform[] boxSpawnLocations;
     public GameObject[] boxPrefabs;
 
+    [Header("Box Placement Bounds")]
+    public List<Renderer> gameBounds;
+
     public static GameManager Instance { get; private set; }
     public static bool IsPaused { get; private set; }
 
@@ -56,7 +59,7 @@ public class GameManager : MonoBehaviour
     private void SpawnBox(Transform position)
     {
         GameObject box = Instantiate(boxPrefabs[UnityEngine.Random.Range(0, boxPrefabs.Length)], position);
-        box.transform.localPosition = -box.GetComponent<BoxController>().sprite.transform.localPosition; // Offset for the sprite not being centered
+        box.transform.localPosition = -box.GetComponent<BoxController>().GetOffset(); // Offset for the sprite not being centered
     }
 
     public void GameOver()

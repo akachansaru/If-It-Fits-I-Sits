@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Cat
   - GameOver
+  - Trash
   layers:
   - Default
   - TransparentFX
