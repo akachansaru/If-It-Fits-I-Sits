@@ -11,29 +11,37 @@ PrefabInstance:
       propertyPath: size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2069636723139881523, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
+      propertyPath: scale
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2069636723139881523, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
+      propertyPath: offset
+      value: 0.425
+      objectReference: {fileID: 0}
     - target: {fileID: 5308869520014978673, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_Size.x
-      value: 1.6
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 5308869520014978673, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_Size.y
-      value: 1.6
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 5308869520014978673, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_Offset.x
-      value: 0.525
+      value: 0.425
       objectReference: {fileID: 0}
     - target: {fileID: 5308869520014978673, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_Offset.y
-      value: 0.525
+      value: 0.425
       objectReference: {fileID: 0}
     - target: {fileID: 6810955717545982035, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.525
+      value: 0.425
       objectReference: {fileID: 0}
     - target: {fileID: 6810955717545982035, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.525
+      value: 0.425
       objectReference: {fileID: 0}
     - target: {fileID: 6810955717545982035, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_LocalRotation.x
@@ -49,23 +57,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7184751810450729314, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_Name
-      value: BoxLarge Variant
+      value: BoxLarge
       objectReference: {fileID: 0}
     - target: {fileID: 7454666188392988425, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.6
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 7454666188392988425, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.6
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 7454666188392988425, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.525
+      value: 0.425
       objectReference: {fileID: 0}
     - target: {fileID: 7454666188392988425, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.525
+      value: 0.425
       objectReference: {fileID: 0}
     - target: {fileID: 8655030930357153139, guid: 9c7a7da1f8ff384488f379b602593a2a, type: 3}
       propertyPath: m_RootOrder

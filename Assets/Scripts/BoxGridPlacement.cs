@@ -92,6 +92,18 @@ public class BoxGridPlacement : MonoBehaviour
         tilemapMain.SetTilesBlock(area, array);
     }
 
+    public void RemoveArea(BoundsInt area)
+    {
+        TileBase[] array = new TileBase[area.size.x * area.size.y * area.size.z];
+        for (int i = 0; i < array.Length; i++)
+        {
+            array[i] = tileBases[TileType.Empty];
+        }
+
+        tilemapMain.SetTilesBlock(area, array);
+    }
+
+    // I think this just snaps the box you're dragging
     public void PlaceOnGrid(Transform toPlace)
     {
         Vector3Int cellPos = tilemapMain.LocalToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
@@ -103,7 +115,7 @@ public class BoxGridPlacement : MonoBehaviour
         foreach(Renderer renderer in GameManager.Instance.gameBounds)
         {
             // FIXME: Need to make it so the offset works and doesn't show the red tile if it's partly over the path
-            if (renderer.bounds.Contains(box.transform.position - box.GetOffset()))
+            if (renderer.bounds.Contains(box.transform.position + box.GetOffset()))
             {
                 return true;
             }

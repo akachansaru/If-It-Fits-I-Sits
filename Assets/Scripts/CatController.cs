@@ -17,9 +17,11 @@ public class CatController : MonoBehaviour
     public float large = 1f;
 
     private Vector3 direction;
+    [SerializeField, ReadOnly] private bool inCenter = false; // This will be false until the cat makes it to the middle and can walk down
+
     [SerializeField, ReadOnly] private bool foundBox = false;
     [SerializeField, ReadOnly] private Transform targetBox; // This is set once the cat has found a box
-    [SerializeField, ReadOnly] private bool inBox = false; // Stop moving when the cat is in the box
+    [SerializeField, ReadOnly] public bool inBox = false; // Stop moving when the cat is in the box
 
     public void Start()
     {
@@ -39,18 +41,52 @@ public class CatController : MonoBehaviour
 
     public void Update()
     {
-        if (!inBox)
+        if (!GameManager.IsPaused)
         {
-            Move();
-            if (targetBox != null && Vector3.Distance(transform.position, targetBox.position) < boxDistanceTollarance)
+            if (!inBox)
             {
-                inBox = true;
+                if (!inCenter && CheckIfCentered())
+                {
+                    direction = Vector2.down;
+                }
+
+                if (!foundBox && inCenter)
+                {
+                    CheckForEmptyBoxes();
+                }
+
+                Move();
+
+                // BUG: get a better way of detecting when it's in a box. Sometimes the cat moves past it
+                if (targetBox != null && Vector3.Distance(transform.position, targetBox.position) < boxDistanceTollarance)
+                {
+                    inBox = true;
+                }
             }
         }
     }
 
-    public void CreateRandomCat()
+    private bool CheckIfCentered()
     {
+        if (direction.x < 0 && transform.position.x < 0)
+        {
+            inCenter = true;
+            return true;
+        }
+
+        if (direction.x > 0 && transform.position.x > 0)
+        {
+            inCenter = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void CreateRandomCat(Vector3 initialDirection)
+    {
+        direction = initialDirection;
+
         Array colors = Enum.GetValues(typeof(Colors));
         GetComponent<ColorSetter>().color = (Colors)colors.GetValue(UnityEngine.Random.Range(0, Enum.GetNames(typeof(Colors)).Length));
 
@@ -58,13 +94,18 @@ public class CatController : MonoBehaviour
         size = (Sizes)sizes.GetValue(UnityEngine.Random.Range(0, Enum.GetNames(typeof(Sizes)).Length));
     }
 
-    private void Move()
+    public void CreateCat(Sizes size, Vector3 initialDirection, float speed)
     {
-        if (!foundBox)
-        {
-            CheckForEmptyBoxes();
-        }
-        
+        this.size = size;
+        direction = initialDirection;
+        this.speed = speed;
+
+        Array colors = Enum.GetValues(typeof(Colors));
+        GetComponent<ColorSetter>().color = (Colors)colors.GetValue(UnityEngine.Random.Range(0, Enum.GetNames(typeof(Colors)).Length));
+    }
+
+    private void Move()
+    {     
         transform.position += speed * Time.deltaTime * direction;
     }
 
@@ -72,31 +113,47 @@ public class CatController : MonoBehaviour
     {
         direction = Vector2.down; // If it doesn't find a hit on either side it will continue walking down
 
-        // FIXME: this will be biased to the right. Add in every other time it goes left
-        RaycastForBox(Vector2.left);
-        RaycastForBox(Vector2.right);
+        // FIXME: this will be biased to the left. Add in every other time it goes right
+        if (!RaycastForBox(Vector2.left))
+        {
+            RaycastForBox(Vector2.right);
+        }
     }
 
-    private void RaycastForBox(Vector2 dir)
+    private bool RaycastForBox(Vector2 dir)
     {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, dir, 50f, walkToLayers);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 50f, walkToLayers);
 
-        if (hits.Length > 0 && !foundBox)
+        // Cat will go to the first free box in the row
+        if (hit && !hit.collider.GetComponentInParent<BoxController>().IsOccupied &&
+            EvaluateBoxSize(hit.collider.GetComponentInParent<BoxController>()))
         {
-            // Loop backwards so the cat goes to the furthest back free box
-            for (int i = hits.Length - 1; i >= 0; i--)
-            {
-                if (!hits[i].collider.GetComponentInParent<BoxController>().IsOccupied &&
-                    EvaluateBoxSize(hits[i].collider.GetComponentInParent<BoxController>()))
-                {
-                    direction = dir;
-                    foundBox = true;
-                    hits[i].collider.GetComponentInParent<BoxController>().IsOccupied = true;
-                    targetBox = hits[i].collider.transform;
-                    break;
-                }
-            }
+            direction = dir;
+            foundBox = true;
+            hit.collider.GetComponentInParent<BoxController>().IsOccupied = true;
+            targetBox = hit.collider.transform;
+            return true;
         }
+        return false;
+
+        //RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, dir, 50f, walkToLayers);
+
+        //if (hits.Length > 0 && !foundBox)
+        //{
+        //    // Cat will go to the first free box in the row
+        //    for (int i = 0; i < hits.Length; i++)
+        //    {
+        //        if (!hits[i].collider.GetComponentInParent<BoxController>().IsOccupied &&
+        //            EvaluateBoxSize(hits[i].collider.GetComponentInParent<BoxController>()))
+        //        {
+        //            direction = dir;
+        //            foundBox = true;
+        //            hits[i].collider.GetComponentInParent<BoxController>().IsOccupied = true;
+        //            targetBox = hits[i].collider.transform;
+        //            break;
+        //        }
+        //    }
+        //}
     }
 
     /// <summary>
